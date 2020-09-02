@@ -3,7 +3,15 @@
 
 #include <QMainWindow>
 
-#include "audiorecorder.h"
+#include <QAudioInput>
+#include <QAudioOutput>
+#include <QAudioFormat>
+#include <QByteArray>
+#include <QThread>
+
+#include "recorder.h"
+
+#define BUFFER_SIZE 8192
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Window; }
@@ -22,13 +30,33 @@ private slots:
 
     void on_stopButton_clicked();
 
+    void readData();
+
 signals:
-    void recordStarted();
+    void recordStarted(QByteArray *);
     void recordStoped();
 
 private:
-    Ui::Window *ui;
+    Ui::Window * _ui;
 
-    AudioRecorder _recorder;
+    QByteArray * _buffer;
+
+    QIODevice * _inputDevice;
+    QIODevice * _outputDevice;
+
+    QAudioInput * _inputAudio;
+    QAudioOutput * _outputAudio;
+
+    QAudioDeviceInfo _inputInfo;
+    QAudioDeviceInfo _outputInfo;
+
+    QThread * _recorderThread;
+
+    Recorder * _recorder;
+
+    bool _isActive;
+
+    void startRecord();
+    void stopRecord();
 };
 #endif // WINDOW_H
