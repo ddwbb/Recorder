@@ -1,11 +1,12 @@
 #ifndef RECORDER_H
 #define RECORDER_H
 
-#include <QByteArray>
-#include <QFile>
+#include <QUrl>
 #include <QObject>
 #include <QThread>
-#include <QMessageBox>
+#include <QAudioRecorder>
+
+#define OUTPUT_NAME "output.wav"
 
 class Recorder : public QObject
 {
@@ -16,12 +17,12 @@ public:
 signals:
 
 public slots:
-    void write(QByteArray *);
     void stop();
+    void pause();
+    void record();
 
 private:
-
-    QFile _file;
+    QAudioRecorder _recorder;
 };
 
 #endif // RECORDER_H

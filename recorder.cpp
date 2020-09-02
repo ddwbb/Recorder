@@ -3,21 +3,31 @@
 
 Recorder::Recorder(QObject * parent) : QObject(parent)
 {
-    _file.setFileName("/output.raw");
-    _file.open(QFile::WriteOnly);
-    if (!_file.isOpen()) {
-        QMessageBox msg(QMessageBox::Warning, "Ошибка", "Ошибка открытия файла для записи");
-        thread()->exit();
-    }
+    //Init audio settings
+    QAudioEncoderSettings audioSettings;
+    audioSettings.setCodec("audio/wav");
+    audioSettings.setQuality(QMultimedia::HighQuality);
+
+    //Set settings and output location
+    _recorder.setEncodingSettings(audioSettings);
+    _recorder.setOutputLocation(QUrl::fromLocalFile(OUTPUT_NAME));
 }
 
-void Recorder::write(QByteArray * buffer)
+//Start recording and save data to output file
+void Recorder::record()
 {
-    _file.write(buffer->data());
-    _file.flush();
+    _recorder.record();
 }
 
+//Pause recording
+void Recorder::pause()
+{
+    _recorder.pause();
+}
+
+//Stop recording and exit
 void Recorder::stop()
 {
+    _recorder.stop();
     thread()->quit();
 }
